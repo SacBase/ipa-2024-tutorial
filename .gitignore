@@ -3,3 +3,4 @@
 tree/
 host/
 a.out*
+*.sacbugreport
