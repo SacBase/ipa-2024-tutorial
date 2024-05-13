@@ -1,1 +1,0 @@
-# ipa-2024-tutorial

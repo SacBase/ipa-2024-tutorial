@@ -1,0 +1,50 @@
+module Tier1;
+use Structures: all;
+export all;
+
+inline
+complex[.,.] genComplexArray( int[2] shp, complex cmin, complex cmax)
+{
+  res = with {
+          ( . <= iv <= .) : cmin + toc( reverse( (tod(iv) / tod(shp))
+                                                 * reverse( todv(cmax-cmin))));
+        } : genarray( shp, toc( 0,0));
+  return( res);
+}
+
+inline
+int escapeTime(complex z, int depth)
+{
+  i=0; c=z;
+
+  while( (normSq( c) <= 4d) && (i <= depth)) {
+    c=c*c+z; i++;
+  }
+
+  return(i);
+}
+
+
+inline
+int[*] escapeTime( complex[*] plane, int depth)
+{
+  values = with {
+             ( . <= iv <= .) : escapeTime( plane[iv], depth);
+           } : genarray( shape( plane), 0);
+
+  return( values);
+}
+
+inline
+Color8::color[.,.] intArrayToMonochrome( int[.,.] a)
+{
+  clut = genLogarithmicClut( 0.4d, 0.9d, Color8::black(), Color8::red());
+
+  a = (a * 255) / maxval(a);
+
+  d = with {
+        ( .<= iv <= .) : clut[ a[ iv]];
+      } : genarray( shape(a), Color8::black());
+
+  return( d);
+}
