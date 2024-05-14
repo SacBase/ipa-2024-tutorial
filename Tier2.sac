@@ -3,13 +3,19 @@ use Structures: all;
 use Numerical: { log2 };
 export all;
 
+
+/**
+ * Iteratively computes `val = val * val + c` starting from `val = c`.
+ * Terminates either when `|val| > 2` (`norm(val) > 2`), or when depth iterations have been performed.
+ * Returns the number of iterations done, and the corresponding complex value.
+ */
 inline
 int, complex escapeTimeAndValue(complex c, int depth)
 {
     time = 0;
     val = c;
 
-    while (time <= depth && normSq(val) <= 4d) {
+    while (time < depth && normSq(val) <= 4d) {
         val = val * val + c;
         time += 1;
     }
@@ -17,26 +23,40 @@ int, complex escapeTimeAndValue(complex c, int depth)
     return (time, val);
 }
 
+/**
+ * Computes the escape times and values of an array of complex numbers.
+ */
 inline
-int[2:shp], complex[2:shp] escapeTimeAndValue(complex[2:shp] plane, int depth)
+int[2:shp], complex[2:shp] escapeTimeAndValue(complex[2:shp] arr, int depth)
 {
-    times, values = { iv -> escapeTimeAndValue (plane[iv], depth)
+    times, values = { iv -> escapeTimeAndValue (arr[iv], depth)
                     | iv < shp };
     return (times, values);
 }
 
+/**
+ * Normalizes the iteration counts in `times`, taking the distance of the
+ * corresponding final complex numbers from the origin into account.
+ *
+ * For corresponding elements `t` in `times` and `c` in `values`, we have:
+ *   0.0                        iff |c| <= 2
+ *   (t + 1) - log2(log2(|c|))  otherwise
+ *
+ * You can use the standard library function `where` here. It has the following signature:
+ *   double[d:shp] where(bool[d:shp] predicate, double trueCase, double[d:shp] falseCase)
+ */
 inline
 double[2:shp] normalizedIterationCount(int[2:shp] times, complex[2:shp] values)
 {
     return where(normSq(values) <= 4d, 0d, tod(times + 1) - log2(log2(norm(values))));
 }
 
+/**
+ * Transforms an array of doubles into RGB values.
+ */
 inline
 color[2:shp] doubleArrayToRGB(double[2:shp] arr)
 {
-    min = minval(arr);
-    max = maxval(arr);
-    scaled_vals = (arr - min) / (max - min);
-    rgbs = Hsb2Rgb(toi(scaled_vals * 360d), 60, 80);
-    return rgbs;
+    scaled_vals = toi(arr * 360d) % 360;
+    return Hsb2Rgb(scaled_vals, 60, 80);
 }

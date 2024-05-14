@@ -2,8 +2,19 @@ module Tier1;
 use Structures: all;
 export all;
 
+/**
+ * Generates an array of complex numbers of shape `[yres, xres]`,
+ * with linearly increasing/decreasing values from cmin to cmax.
+ *
+ * The element at index [0,0] should be `cmin`.
+ * The element at index [yres,xres] should be `cmin + cmax`.
+ *
+ * Note that the first axis holds the y-values, and thus corresponds to the imaginary values.
+ * Whereas the second axis holds the x-values, and thus corresponds to the real values.
+ */
 inline
-complex[yres,xres] genComplexArray(int xres, int yres, complex cmin, complex cmax)
+complex[yres,xres] genComplexArray(int xres, int yres,
+                                   complex cmin, complex cmax)
 {
     difReal = real(cmax) - real(cmin);
     difImag = imag(cmax) - imag(cmin);
@@ -12,13 +23,21 @@ complex[yres,xres] genComplexArray(int xres, int yres, complex cmin, complex cma
            | [y,x] < [yres,xres] };
 }
 
+/**
+ * Iteratively computes `val = val * val + c` starting from `val = c`.
+ * Terminates either when `|val| > 2` (`norm(val) > 2`), or when depth iterations have been performed.
+ * Returns the number of iterations done.
+ *
+ * Note that besides `norm` there exists `normSq` which computes `|val|^2`.
+ * As opposed to `norm`, it does not contain a square root.
+ */
 inline
 int escapeTime(complex c, int depth)
 {
     time = 0;
     val = c;
 
-    while (time <= depth && normSq(val) <= 4d) {
+    while (time < depth && normSq(val) <= 4d) {
         val = val * val + c;
         time += 1;
     }
@@ -26,17 +45,27 @@ int escapeTime(complex c, int depth)
     return time;
 }
 
+/**
+ * Computes the escape times of an array of complex numbers.
+ */
 inline
-int[2:shp] escapeTime(complex[2:shp] plane, int depth)
+int[2:shp] escapeTime(complex[2:shp] arr, int depth)
 {
-    return { iv -> escapeTime(plane[iv], depth)
+    return { iv -> escapeTime(arr[iv], depth)
            | iv < shp };
 }
 
+/**
+ * Converts non-negative integer values into color values using
+ * a logarithmic 256 element clut from black to red.
+ */
 inline
 color[2:shp] intArrayToMonochrome(int[2:shp] arr)
 {
-    arr = (arr * 255) / maxval(arr);
     clut = genLogarithmicClut(0.4d, 0.9d, black(), red());
+
+    // Convert to a range [0,256)
+    arr = (arr * 255) / maxval(arr);
+    // Get color value at each index from the clut
     return { iv -> clut[arr[iv]] };
 }

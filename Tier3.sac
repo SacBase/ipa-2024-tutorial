@@ -2,6 +2,9 @@ module Tier3;
 use Structures: all;
 export all;
 
+/**
+ * Applies relaxation on the given array with the given weights.
+ */
 inline
 int[2:shp] relax(int[m,m] weights, int[2:shp] arr)
 {
@@ -9,6 +12,9 @@ int[2:shp] relax(int[m,m] weights, int[2:shp] arr)
            | iv < shp };
 }
 
+/**
+ * Blurs the given array using a 3x3 weight.
+ */
 inline
 int[2:shp] gaussBlur(int[2:shp] arr)
 {
@@ -20,20 +26,30 @@ int[2:shp] gaussBlur(int[2:shp] arr)
     return relax(weights, arr) / sum(weights);
 }
 
+/**
+ * Applies a 3x3 blur on the given image. This blurring is applied once to each color channel.
+ * I.e., it is applied once to all red values, once to all green values, and once to all blue values.
+ *
+ * Note that images have the color on the 'inside', i.e. their shape is [y, x, col].
+ * Before blurring you will have to transform the image so that it becomes [col, y, x].
+ */
 inline
 color[2:shp] gaussBlur(color[2:shp] img)
 {
     // Reshape to put color on the first axis
-    color_major = {[i, j, k] -> toi(img)[k, i, j]};
+    color_major = { [col, y, x] -> toi(img)[y, x, col] };
 
     blur = { [i] -> gaussBlur(color_major[i]) };
 
     // Put color back at the last axis
-    idx_major = {[k, i, j] -> blur[i, j, k]};
+    idx_major = { [y, x, col] -> blur[col, y, x] };
 
     return { iv -> newColor(idx_major[iv]) | iv < shp };
 }
 
+/**
+ * Blurs the given array using a 5x5 weight.
+ */
 inline
 int[2:shp] gaussBlur25(int[2:shp] arr)
 {
@@ -47,16 +63,23 @@ int[2:shp] gaussBlur25(int[2:shp] arr)
     return relax(weights, arr) / sum(weights);
 }
 
+/**
+ * Applies a 5x5 blur on the given image. This blurring is applied once to each color channel.
+ * I.e., it is applied once to all red values, once to all green values, and once to all blue values.
+ *
+ * Note that images have the color on the 'inside', i.e. their shape is [y, x, col].
+ * Before blurring you will have to transform the image so that it becomes [col, y, x].
+ */
 inline
 color[2:shp] gaussBlur25(color[2:shp] img)
 {
     // Reshape to put color on the first axis
-    color_major = {[i, j, k] -> toi(img)[k, i, j]};
+    color_major = { [col, y, x] -> toi(img)[y, x, col] };
 
     blur = { [i] -> gaussBlur25(color_major[i]) };
 
     // Put color back at the last axis
-    idx_major = {[k, i, j] -> blur[i, j, k]};
+    idx_major = { [y, x, col] -> blur[col, y, x] };
 
     return { iv -> newColor(idx_major[iv]) | iv < shp };
 }
