@@ -29,11 +29,12 @@ int main()
 
     while (true) {
         expand = EXPAND;
-        cur_shape = [YRES, XRES];
+        xres = XRES;
+        yres = YRES;
 
         do {
-            StdIO::printf("Generating %ix%i array...\n", cur_shape[1], cur_shape[0]);
-            plane = genComplexArray(cur_shape, cmin[0], cmax[0]);
+            StdIO::printf("Generating %ix%i array...\n", xres, yres);
+            plane = genComplexArray(xres, yres, cmin[0], cmax[0]);
 
         #if TIER == 1
 
@@ -72,14 +73,15 @@ int main()
             drawArray(disp, rgbs);
 
             expand /= 2;
-            cur_shape *= 2;
+            xres *= 2;
+            yres *= 2;
         } while (expand > 0);
 
         StdIO::printf("Waiting for input...\n");
 
         zoom_coords = getSelection(disp);
         if (all(zoom_coords >= 0)) {
-            plane = genComplexArray(EXPAND * [YRES, XRES], cmin[0], cmax[0]);
+            plane = genComplexArray(EXPAND * XRES, EXPAND * YRES, cmin[0], cmax[0]);
             cmin = [plane[zoom_coords[0]]] ++ cmin;
             cmax = [plane[zoom_coords[1]]] ++ cmax;
         } else if (shape(cmin)[0] > 1) {
