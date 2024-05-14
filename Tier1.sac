@@ -5,10 +5,10 @@ export all;
 inline
 complex[yres,xres] genComplexArray(int xres, int yres, complex cmin, complex cmax)
 {
-    cdifReal = real(cmax) - real(cmin);
-    cdifImag = imag(cmax) - imag(cmin);
-    return { [y,x] -> cmin + toc((tod(x) / tod(xres)) * cdifReal,
-                                 (tod(y) / tod(yres)) * cdifImag)
+    difReal = real(cmax) - real(cmin);
+    difImag = imag(cmax) - imag(cmin);
+    return { [y,x] -> cmin + toc((tod(x) / tod(xres)) * difReal,
+                                 (tod(y) / tod(yres)) * difImag)
            | [y,x] < [yres,xres] };
 }
 
