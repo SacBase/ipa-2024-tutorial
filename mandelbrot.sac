@@ -36,39 +36,38 @@ int main()
             StdIO::printf("Generating %ix%i array...\n", xres, yres);
             plane = genComplexArray(xres, yres, cmin[0], cmax[0]);
 
-        #if TIER == 1
+            #if TIER == 1
 
-            StdIO::printf("Computing escape time...\n");
-            ts = escapeTime(plane, DEPTH);
+                StdIO::printf("Computing escape time...\n");
+                ts = escapeTime(plane, DEPTH);
 
-            StdIO::printf("Converting to rgb...\n");
-            rgbs = intArrayToMonochrome(ts);
+                StdIO::printf("Converting to rgb...\n");
+                rgbs = intArrayToMonochrome(ts);
 
-        #elif TIER >= 2
+            #elif TIER >= 2
 
-            StdIO::printf("Computing escape time...\n");
-            ts, vs = escapeTimeAndValue(plane, DEPTH);
+                StdIO::printf("Computing escape time...\n");
+                ts, vs = escapeTimeAndValue(plane, DEPTH);
 
-            StdIO::printf("Normalizing...\n");
-            nvs = normalizedIterationCount(ts, vs);
+                StdIO::printf("Normalizing...\n");
+                nvs = normalizedIterationCount(ts, vs);
 
-            StdIO::printf("Converting to rgb...\n");
-            rgbs = doubleArrayToRGB(nvs);
+                StdIO::printf("Converting to rgb...\n");
+                rgbs = doubleArrayToRGB(nvs);
 
-        #if TIER >= 3
+                #if TIER >= 3
 
-            StdIO::printf("Blurring...\n");
-            rgbs = gaussBlur(gaussBlur25(rgbs));
-            //rgbs = gaussBlur(rgbs);
+                    StdIO::printf("Blurring...\n");
+                    rgbs = gaussBlur(gaussBlur25(rgbs));
 
-        #if TIER >= 4
+                    #if TIER >= 4
 
-            StdIO::printf("Sobel edges...\n");
-            rgbs = sobelEdges(rgbs);
+                        StdIO::printf("Sobel edges...\n");
+                        rgbs = sobelEdges(rgbs);
 
-        #endif // TIER >= 4
-        #endif // TIER >= 3
-        #endif // TIER >= 2
+                    #endif // TIER >= 4
+                #endif // TIER >= 3
+            #endif // TIER >= 2
 
             rgbs = stretchRgb(rgbs, expand);
             drawArray(disp, rgbs);
