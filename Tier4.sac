@@ -21,7 +21,7 @@ int[2:shp] sobelEdges(int[2:shp] arr)
 inline
 color[2:shp] sobelEdges(color[2:shp] img)
 {
-    // Reshape to put color on the first axis
+    // Transform to put color on the first axis
     color_major = { [col, y, x] -> toi(img)[y, x, col] };
 
     blur = { [i] -> sobelEdges(color_major[i]) };

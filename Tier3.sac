@@ -36,7 +36,7 @@ int[2:shp] gaussBlur(int[2:shp] arr)
 inline
 color[2:shp] gaussBlur(color[2:shp] img)
 {
-    // Reshape to put color on the first axis
+    // Transform to put color on the first axis
     color_major = { [col, y, x] -> toi(img)[y, x, col] };
 
     blur = { [i] -> gaussBlur(color_major[i]) };
@@ -73,7 +73,7 @@ int[2:shp] gaussBlur25(int[2:shp] arr)
 inline
 color[2:shp] gaussBlur25(color[2:shp] img)
 {
-    // Reshape to put color on the first axis
+    // Transform to put color on the first axis
     color_major = { [col, y, x] -> toi(img)[y, x, col] };
 
     blur = { [i] -> gaussBlur25(color_major[i]) };

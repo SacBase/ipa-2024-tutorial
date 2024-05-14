@@ -3,7 +3,6 @@ use Structures: all;
 use Numerical: { log2 };
 export all;
 
-
 /**
  * Iteratively computes `val = val * val + c` starting from `val = c`.
  * Terminates either when `|val| > 2` (`norm(val) > 2`), or when depth iterations have been performed.
@@ -42,8 +41,11 @@ int[2:shp], complex[2:shp] escapeTimeAndValue(complex[2:shp] arr, int depth)
  *   0.0                        iff |c| <= 2
  *   (t + 1) - log2(log2(|c|))  otherwise
  *
- * You can use the standard library function `where` here. It has the following signature:
+ * You can use the standard library function `where` here.
+ * Arguments can be scalar or arrays, you might want to use the following case:
  *   double[d:shp] where(bool[d:shp] predicate, double trueCase, double[d:shp] falseCase)
+ * If the predicate holds, the scalar value from the true case is used,
+ * otherwise the element at the corresponding index in the false case is used.
  */
 inline
 double[2:shp] normalizedIterationCount(int[2:shp] times, complex[2:shp] values)

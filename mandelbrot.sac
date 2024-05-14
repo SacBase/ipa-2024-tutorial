@@ -1,5 +1,5 @@
-#define XRES 15
-#define YRES 10
+#define XRES 18
+#define YRES 12
 #define EXPAND 64
 #define DEPTH 2048
 
@@ -58,11 +58,12 @@ int main()
         #if TIER >= 3
 
             StdIO::printf("Blurring...\n");
-            //rgbs = gaussBlur(gaussBlur25(rgbs));
-            rgbs = gaussBlur(rgbs);
+            rgbs = gaussBlur(gaussBlur25(rgbs));
+            //rgbs = gaussBlur(rgbs);
 
         #if TIER >= 4
 
+            StdIO::printf("Sobel edges...\n");
             rgbs = sobelEdges(rgbs);
 
         #endif // TIER >= 4
