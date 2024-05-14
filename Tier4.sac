@@ -21,7 +21,13 @@ int[2:shp] sobelEdges(int[2:shp] img)
 inline
 color[2:shp] sobelEdges(color[2:shp] img)
 {
-    int_img = toi(img);
-    int_res = { [.,.,i] -> sobelEdges(int_img[.,.,i]) };
-    return { iv -> newColor(int_res[iv]) | iv < shp };
+    // Reshape to put color on the first axis
+    color_major = {[i, j, k] -> toi(img)[k, i, j]};
+
+    blur = { [i] -> sobelEdges(color_major[i]) };
+
+    // Put color back at the last axis
+    idx_major = {[k, i, j] -> blur[i, j, k]};
+
+    return { iv -> newColor(idx_major[iv]) | iv < shp };
 }

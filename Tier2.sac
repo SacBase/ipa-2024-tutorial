@@ -3,6 +3,7 @@ use Structures: all;
 use Numerical: { log2 };
 export all;
 
+inline
 int, complex escapeTimeAndValue(complex z, int depth)
 {
     i = 0;

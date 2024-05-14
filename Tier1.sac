@@ -8,8 +8,18 @@ complex[2:shp] genComplexArray(int[2] shp, complex cmin, complex cmax)
     return { iv -> cmin + toc(reverse((tod(iv) / tod(shp))
                                       * reverse( todv(cmax-cmin))))
            | iv < shp };
+
+    /*
+
+    cdifReal = real(cmax) - real(cmin);
+    cdifImag = imag(cmax) - imag(cmin);
+    return { [y,x] -> cmin + toc(tod(x) * tod(xres) * cdifReal,
+                                 tod(y) * tod(yres) * cdifImag)
+           | [y,x] < [yres,xres] };
+    */
 }
 
+inline
 int escapeTime(complex z, int depth)
 {
     i = 0;

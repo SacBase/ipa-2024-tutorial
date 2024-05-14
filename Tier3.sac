@@ -2,9 +2,6 @@ module Tier3;
 use Structures: all;
 export all;
 
-specialize int[.,.] relax(int[3,3] weights, int[.,.] arr);
-specialize int[.,.] relax(int[5,5] weights, int[.,.] arr);
-
 inline
 int[2:shp] relax(int[m,m] weights, int[2:shp] arr)
 {
@@ -26,9 +23,15 @@ int[2:shp] gaussBlur(int[2:shp] img)
 inline
 color[2:shp] gaussBlur(color[2:shp] img)
 {
-    int_img = toi(img);
-    int_res = { [.,.,i] -> gaussBlur(int_img[.,.,i]) };
-    return { iv -> newColor( int_res[iv]) | iv < shp };
+    // Reshape to put color on the first axis
+    color_major = {[i, j, k] -> toi(img)[k, i, j]};
+
+    blur = { [i] -> gaussBlur(color_major[i]) };
+
+    // Put color back at the last axis
+    idx_major = {[k, i, j] -> blur[i, j, k]};
+
+    return { iv -> newColor(idx_major[iv]) | iv < shp };
 }
 
 inline
@@ -47,7 +50,13 @@ int[2:shp] gaussBlur25(int[2:shp] img)
 inline
 color[2:shp] gaussBlur25(color[2:shp] img)
 {
-    int_img = toi(img);
-    int_res = { [.,.,i] -> gaussBlur25(int_img[.,.,i]) };
-    return { iv -> newColor(int_res[iv]) | iv < shp };
+    // Reshape to put color on the first axis
+    color_major = {[i, j, k] -> toi(img)[k, i, j]};
+
+    blur = { [i] -> gaussBlur25(color_major[i]) };
+
+    // Put color back at the last axis
+    idx_major = {[k, i, j] -> blur[i, j, k]};
+
+    return { iv -> newColor(idx_major[iv]) | iv < shp };
 }

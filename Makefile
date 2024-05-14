@@ -1,4 +1,4 @@
-SAC2CFLAGS = -v2 -O3 -specmode aks -maxwlur 9 -nouar -t mt_pth
+SAC2CFLAGS = -v2 -O3 -maxwlur 25 -nouar
 
 clean:
 	rm -rf host/

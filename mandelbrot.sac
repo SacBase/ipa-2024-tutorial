@@ -93,7 +93,7 @@ int main()
 }
 
 inline
-color[2:sshp] stretchRgb( color[2:shp] pic, int stretch)
+color[2:sshp] stretchRgb(color[2:shp] pic, int stretch)
 {
     return { iv -> pic[iv / stretch] | iv < shp * stretch };
 }
