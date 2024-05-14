@@ -1,23 +1,7 @@
 module Tier4;
 use Structures: all;
 use Tier3: { relax };
-export { sobelEdges };
-
-/*
- * Cut off all values that are geq to a given max_val
- * This is used to remove any invalid 8-bit grayscale values (> 255)
- */
-inline
-int thrs(int val, int max_val)
-{
-    return val <= max_val ? val : max_val;
-}
-
-inline
-int[2:shp] thrs(int[2:shp] vals, int max_val)
-{
-    return { iv -> thrs(vals[iv], max_val) };
-}
+export all;
 
 inline
 int[2:shp] sobelEdges(int[2:shp] img)
@@ -31,7 +15,7 @@ int[2:shp] sobelEdges(int[2:shp] img)
 
     resX = relax(weightsX, img);
     resY = relax(weightsY, img);
-    return thrs(resX + resY, 255);
+    return min(resX + resY, 255);
 }
 
 inline
@@ -39,5 +23,5 @@ color[2:shp] sobelEdges(color[2:shp] img)
 {
     int_img = toi(img);
     int_res = { [.,.,i] -> sobelEdges(int_img[.,.,i]) };
-    return { iv -> newColor( int_res[iv]) | iv < shp };
+    return { iv -> newColor(int_res[iv]) | iv < shp };
 }

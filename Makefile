@@ -1,4 +1,8 @@
-SAC2CFLAGS = -v2 -O3 -specmode akd -nouar -noedfa -t mt_pth
+SAC2CFLAGS = -v2 -O3 -specmode aks -maxwlur 9 -nouar -t mt_pth
+
+clean:
+	rm -rf host/
+	rm -rf tree/
 
 tier1:
 	sac2c $(SAC2CFLAGS) Tier1.sac

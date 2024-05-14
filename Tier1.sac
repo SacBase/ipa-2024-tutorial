@@ -10,7 +10,6 @@ complex[2:shp] genComplexArray(int[2] shp, complex cmin, complex cmax)
            | iv < shp };
 }
 
-inline
 int escapeTime(complex z, int depth)
 {
     i = 0;
