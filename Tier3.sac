@@ -10,14 +10,14 @@ int[2:shp] relax(int[m,m] weights, int[2:shp] arr)
 }
 
 inline
-int[2:shp] gaussBlur(int[2:shp] img)
+int[2:shp] gaussBlur(int[2:shp] arr)
 {
     weights = [
         [1, 2, 1],
         [2, 3, 2],
         [1, 2, 1]
     ];
-    return relax(weights, img) / sum(weights);
+    return relax(weights, arr) / sum(weights);
 }
 
 inline
@@ -35,7 +35,7 @@ color[2:shp] gaussBlur(color[2:shp] img)
 }
 
 inline
-int[2:shp] gaussBlur25(int[2:shp] img)
+int[2:shp] gaussBlur25(int[2:shp] arr)
 {
     weights = [
         [1,  4,  7,  4, 1],
@@ -44,7 +44,7 @@ int[2:shp] gaussBlur25(int[2:shp] img)
         [4, 20, 33, 20, 4],
         [1,  4,  7,  4, 1]
     ];
-    return relax(weights, img) / sum(weights);
+    return relax(weights, arr) / sum(weights);
 }
 
 inline

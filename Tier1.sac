@@ -20,17 +20,17 @@ complex[2:shp] genComplexArray(int[2] shp, complex cmin, complex cmax)
 }
 
 inline
-int escapeTime(complex z, int depth)
+int escapeTime(complex c, int depth)
 {
-    i = 0;
-    c = z;
+    time = 0;
+    val = c;
 
-    while (i <= depth && normSq(c) <= 4d) {
-        c = c * c + z;
-        i += 1;
+    while (time <= depth && normSq(val) <= 4d) {
+        val = val * val + c;
+        time += 1;
     }
 
-    return i;
+    return time;
 }
 
 inline

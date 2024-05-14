@@ -4,7 +4,7 @@ use Tier3: { relax };
 export all;
 
 inline
-int[2:shp] sobelEdges(int[2:shp] img)
+int[2:shp] sobelEdges(int[2:shp] arr)
 {
     weightsY = [
         [ 1,  2,  1],
@@ -13,8 +13,8 @@ int[2:shp] sobelEdges(int[2:shp] img)
     ];
     weightsX = transpose(weightsY);
 
-    resX = relax(weightsX, img);
-    resY = relax(weightsY, img);
+    resX = relax(weightsX, arr);
+    resY = relax(weightsY, arr);
     return min(resX + resY, 255);
 }
 

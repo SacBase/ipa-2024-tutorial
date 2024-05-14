@@ -4,17 +4,17 @@ use Numerical: { log2 };
 export all;
 
 inline
-int, complex escapeTimeAndValue(complex z, int depth)
+int, complex escapeTimeAndValue(complex c, int depth)
 {
-    i = 0;
-    c = z;
+    time = 0;
+    val = c;
 
-    while (i <= depth && normSq(c) <= 4d) {
-        c = c * c + z;
-        i += 1;
+    while (time <= depth && normSq(val) <= 4d) {
+        val = val * val + c;
+        time += 1;
     }
 
-    return (i, c);
+    return (time, val);
 }
 
 inline
