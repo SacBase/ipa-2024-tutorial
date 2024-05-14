@@ -1,4 +1,4 @@
-SAC2CFLAGS = -v2 -O3 -ecc -check tc -maxoptcyc 10 -nouar -noedfa
+SAC2CFLAGS = -v2 -O3 -nouar -noedfa
 
 tier1:
 	sac2c $(SAC2CFLAGS) Tier1.sac
@@ -11,3 +11,7 @@ tier2:
 tier3:
 	sac2c $(SAC2CFLAGS) Tier3.sac
 	sac2c $(SAC2CFLAGS) -DTIER=3 mandelbrot.sac
+
+tier3:
+	sac2c $(SAC2CFLAGS) Tier4.sac
+	sac2c $(SAC2CFLAGS) -DTIER=4 mandelbrot.sac

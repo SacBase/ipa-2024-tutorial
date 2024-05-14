@@ -1,5 +1,6 @@
-#define XRES 384
-#define YRES 256
+#define XRES 6
+#define YRES 4
+#define EXPAND 64
 #define DEPTH 1024
 
 #ifndef TIER
@@ -11,57 +12,74 @@ use Tier1: all;
 use Tier2: all;
 #if TIER >= 3
 use Tier3: all;
-#endif
-#endif
+#if TIER >= 4
+use Tier4: all;
+#endif // TIER >= 4
+#endif // TIER >= 3
+#endif // TIER >= 2
 
 use Structures: all;
 use SDLdisplay: all;
 
 int main()
 {
-    disp = initDisplay([YRES, XRES]);
+    disp = initDisplay(EXPAND * [YRES, XRES]);
     cmin = [toc(-2.2,  1.0)];
     cmax = [toc( 0.8, -1.0)];
 
     while (true) {
-        StdIO::printf("Generating array...\n");
-        plane = genComplexArray([YRES, XRES], cmin[0], cmax[0]);
+        expand = EXPAND;
+        cur_shape = [YRES,XRES];
 
-    #if TIER == 1
+        do {
+            StdIO::printf("Generating %ix%i array...\n", cur_shape[1], cur_shape[0]);
+            plane = genComplexArray(cur_shape, cmin[0], cmax[0]);
 
-        StdIO::printf("Computing escape time...\n");
-        ts = escapeTime(plane, DEPTH);
+        #if TIER == 1
 
-        StdIO::printf("Converting to rgb...\n");
-        rgbs = intArrayToMonochrome(ts);
+            StdIO::printf("Computing escape time...\n");
+            ts = escapeTime(plane, DEPTH);
 
-    #elif TIER >= 2
+            StdIO::printf("Converting to rgb...\n");
+            rgbs = intArrayToMonochrome(ts);
 
-        StdIO::printf("Computing escape time...\n");
-        ts, vs = escapeTimeAndValue(plane, DEPTH);
+        #elif TIER >= 2
 
-        StdIO::printf("Normalizing...\n");
-        nvs = normalizedIterationCount(ts, vs);
+            StdIO::printf("Computing escape time...\n");
+            ts, vs = escapeTimeAndValue(plane, DEPTH);
 
-        StdIO::printf("Converting to rgb...\n");
-        rgbs = doubleArrayToRGB(nvs);
+            StdIO::printf("Normalizing...\n");
+            nvs = normalizedIterationCount(ts, vs);
 
-    #if TIER >= 3
+            StdIO::printf("Converting to rgb...\n");
+            rgbs = doubleArrayToRGB(nvs);
 
-        //StdIO::printf("Blurring...\n");
-        //rgbs = gaussBlur25(rgbs);
-        StdIO::printf("Blurring...\n");
-        rgbs = gaussBlur(rgbs);
+        #if TIER >= 3
 
-    #endif // TIER >= 3
-    #endif // TIER >= 2
+            StdIO::printf("Blurring...\n");
+            //rgbs = gaussBlur(gaussBlur25(rgbs));
+            rgbs = gaussBlur(rgbs);
 
-        drawArray(disp, rgbs);
+        #if TIER >= 4
+
+            rgbs = sobelEdges( rgbs);
+
+        #endif // TIER >= 4
+        #endif // TIER >= 3
+        #endif // TIER >= 2
+StdIO::print(rgbs);
+            rgbs = stretchRgb(rgbs, expand);
+            drawArray(disp, rgbs);
+
+            expand /= 2;
+            cur_shape *= 2;
+        } while (expand > 0);
 
         StdIO::printf("Waiting for input...\n");
 
         zoom_coords = getSelection(disp);
         if (all(zoom_coords >= 0)) {
+            plane = genComplexArray(EXPAND * [YRES, XRES], cmin[0], cmax[0]);
             cmin = [plane[zoom_coords[0]]] ++ cmin;
             cmax = [plane[zoom_coords[1]]] ++ cmax;
         } else if (shape(cmin)[0] > 1) {
@@ -74,3 +92,8 @@ int main()
     return 0;
 }
 
+inline
+color[.,.] stretchRgb( color[2:shp] pic, int stretch)
+{
+    return { iv -> pic[iv / stretch] | iv < shp * stretch };
+}

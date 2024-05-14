@@ -3,48 +3,38 @@ use Structures: all;
 export all;
 
 inline
-complex[.,.] genComplexArray( int[2] shp, complex cmin, complex cmax)
+complex[2:shp] genComplexArray(int[2] shp, complex cmin, complex cmax)
 {
-  res = with {
-          ( . <= iv <= .) : cmin + toc( reverse( (tod(iv) / tod(shp))
-                                                 * reverse( todv(cmax-cmin))));
-        } : genarray( shp, toc( 0,0));
-  return( res);
+    return { iv -> cmin + toc(reverse((tod(iv) / tod(shp))
+                                      * reverse( todv(cmax-cmin))))
+           | iv < shp };
 }
 
 inline
 int escapeTime(complex z, int depth)
 {
-  i=0; c=z;
+    i = 0;
+    c = z;
 
-  while( (normSq( c) <= 4d) && (i <= depth)) {
-    c=c*c+z; i++;
-  }
+    while (i <= depth && normSq(c) <= 4d) {
+        c = c * c + z;
+        i += 1;
+    }
 
-  return(i);
-}
-
-
-inline
-int[*] escapeTime( complex[*] plane, int depth)
-{
-  values = with {
-             ( . <= iv <= .) : escapeTime( plane[iv], depth);
-           } : genarray( shape( plane), 0);
-
-  return( values);
+    return i;
 }
 
 inline
-Color8::color[.,.] intArrayToMonochrome( int[.,.] a)
+int[2:shp] escapeTime(complex[2:shp] plane, int depth)
 {
-  clut = genLogarithmicClut( 0.4d, 0.9d, Color8::black(), Color8::red());
+    return { iv -> escapeTime(plane[iv], depth)
+           | iv < shp };
+}
 
-  a = (a * 255) / maxval(a);
-
-  d = with {
-        ( .<= iv <= .) : clut[ a[ iv]];
-      } : genarray( shape(a), Color8::black());
-
-  return( d);
+inline
+color[2:shp] intArrayToMonochrome(int[2:shp] arr)
+{
+    arr = (arr * 255) / maxval(arr);
+    clut = genLogarithmicClut(0.4d, 0.9d, black(), red());
+    return { iv -> clut[arr[iv]] };
 }

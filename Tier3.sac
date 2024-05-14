@@ -1,6 +1,27 @@
 module Tier3;
-use Array: all;
-export { gaussBlur, gaussBlur25 };
+
+use Structures: all;
+
+export { apply, gaussBlur, gaussBlur25 };
+
+/*
+ * Cut off all values that are geq to a given max_val
+ * This is used to remove any invalid 8-bit grayscale values (> 255)
+ */
+inline
+int thrs( int val, int max_val)
+{
+  return( val <= max_val ? val : max_val);
+}
+
+inline
+int[*] thrs( int[*] vals, int max_val)
+{
+  res = with{ ( . <= iv <= . ) : thrs( vals[iv], max_val);
+        } : genarray( shape( vals), 0);
+
+  return( res);
+}
 
 /*
  * Convolution with given mask
@@ -47,11 +68,31 @@ int[.,.] apply( int[.,.] kernel, int[.,.] img)
 
 /* Stencil operations ****************************************************** */
 
-int[.,.] relax(int[m,m] weights, int[.,.] arr)
+inline
+int[.,.] sobelEdges( int[.,.] img)
 {
-    return { iv -> sum({ ov -> weights[ov] * rotate(m / 2 - ov, arr)[iv] })
-           | iv < shape(arr) };
+  SY = [
+        [1, 2, 1],
+        [0, 0, 0],
+        [-1, -2, -1]
+       ];
+  SX = transpose( SY);
+
+  resX = apply( SX, img);
+  resY = apply( SY, img);
+
+  return( thrs( resX + resY, 255));
 }
+
+inline
+Color8::color[.,.] sobelEdges( Color8::color[.,.] img)
+{
+  int_res = { [.,.,i] -> sobelEdges( (Color8::toi( img)[.,.,i])) };
+  res = { [x,y] -> Color8::newColor( int_res[x,y]) };
+  return( res);
+}
+
+
 
 inline
 int[.,.] gaussBlur( int[.,.] img)
@@ -62,7 +103,7 @@ int[.,.] gaussBlur( int[.,.] img)
          [ 1, 2, 1]
        ];
 
-  return( relax(GB, img));
+  return( apply( GB, img) / sum( GB));
 }
 
 inline
