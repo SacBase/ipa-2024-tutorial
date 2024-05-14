@@ -12,14 +12,14 @@ inline
 int, complex escapeTimeAndValue(complex c, int depth)
 {
     time = 0;
-    val = c;
+    z = c;
 
-    while (time < depth && normSq(val) <= 4d) {
-        val = val * val + c;
+    while (time < depth && normSq(z) <= 4d) {
+        z = z * z + c;
         time += 1;
     }
 
-    return (time, val);
+    return (time, z);
 }
 
 /**

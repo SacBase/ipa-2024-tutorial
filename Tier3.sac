@@ -37,14 +37,14 @@ inline
 color[2:shp] gaussBlur(color[2:shp] img)
 {
     // Transform to put color on the first axis
-    color_major = { [col, y, x] -> toi(img)[y, x, col] };
+    color_major = { [rgb, y, x] -> toi(img)[y, x, rgb] };
 
-    blur = { [i] -> gaussBlur(color_major[i]) };
+    blur = { [rgb] -> gaussBlur(color_major[rgb]) };
 
     // Put color back at the last axis
-    idx_major = { [y, x, col] -> blur[col, y, x] };
+    idx_major = { [y, x, rgb] -> blur[rgb, y, x] };
 
-    return { iv -> newColor(idx_major[iv]) | iv < shp };
+    return { iv -> (color)(idx_major[iv]) | iv < shp };
 }
 
 /**
@@ -74,12 +74,12 @@ inline
 color[2:shp] gaussBlur25(color[2:shp] img)
 {
     // Transform to put color on the first axis
-    color_major = { [col, y, x] -> toi(img)[y, x, col] };
+    color_major = { [rgb, y, x] -> toi(img)[y, x, rgb] };
 
-    blur = { [i] -> gaussBlur25(color_major[i]) };
+    blur = { [rgb] -> gaussBlur25(color_major[rgb]) };
 
     // Put color back at the last axis
-    idx_major = { [y, x, col] -> blur[col, y, x] };
+    idx_major = { [y, x, rgb] -> blur[rgb, y, x] };
 
-    return { iv -> newColor(idx_major[iv]) | iv < shp };
+    return { iv -> (color)(idx_major[iv]) | iv < shp };
 }

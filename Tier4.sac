@@ -40,5 +40,5 @@ color[2:shp] sobelEdges(color[2:shp] img)
     // Put color back at the last axis
     idx_major = { [y, x, col] -> blur[col, y, x] };
 
-    return { iv -> newColor(idx_major[iv]) | iv < shp };
+    return { iv -> (color)(idx_major[iv]) | iv < shp };
 }
