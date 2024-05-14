@@ -1,8 +1,6 @@
 module Tier4;
-
-use Array: all;
-use Tier3: { apply };
-
+use Structures: all;
+use Tier3: { relax };
 export { sobelEdges };
 
 /*
@@ -10,40 +8,36 @@ export { sobelEdges };
  * This is used to remove any invalid 8-bit grayscale values (> 255)
  */
 inline
-int thrs( int val, int max_val)
+int thrs(int val, int max_val)
 {
-  return( val <= max_val ? val : max_val);
+    return val <= max_val ? val : max_val;
 }
 
 inline
-int[*] thrs( int[*] vals, int max_val)
+int[2:shp] thrs(int[2:shp] vals, int max_val)
 {
-  res = with{ ( . <= iv <= . ) : thrs( vals[iv], max_val);
-        } : genarray( shape( vals), 0);
-
-  return( res);
+    return { iv -> thrs(vals[iv], max_val) };
 }
 
 inline
-int[.,.] sobelEdges( int[.,.] img)
+int[2:shp] sobelEdges(int[2:shp] img)
 {
-  SY = [
-        [1, 2, 1],
-        [0, 0, 0],
+    weightsY = [
+        [ 1,  2,  1],
+        [ 0,  0,  0],
         [-1, -2, -1]
-       ];
-  SX = transpose( SY);
+    ];
+    weightsX = transpose(weightsY);
 
-  resX = apply( SX, img);
-  resY = apply( SY, img);
-
-  return( thrs( resX + resY, 255));
+    resX = relax(weightsX, img);
+    resY = relax(weightsY, img);
+    return thrs(resX + resY, 255);
 }
 
 inline
-Color8::color[.,.] sobelEdges( Color8::color[.,.] img)
+color[2:shp] sobelEdges(color[2:shp] img)
 {
-  int_res = { [.,.,i] -> sobelEdges( (Color8::toi( img)[.,.,i])) };
-  res = { [x,y] -> Color8::newColor( int_res[x,y]) };
-  return( res);
+    int_img = toi(img);
+    int_res = { [.,.,i] -> sobelEdges(int_img[.,.,i]) };
+    return { iv -> newColor( int_res[iv]) | iv < shp };
 }

@@ -1,4 +1,4 @@
-SAC2CFLAGS = -v2 -O3 -nouar -noedfa
+SAC2CFLAGS = -v2 -O3 -specmode akd -nouar -noedfa -t mt_pth
 
 tier1:
 	sac2c $(SAC2CFLAGS) Tier1.sac
@@ -12,6 +12,13 @@ tier3:
 	sac2c $(SAC2CFLAGS) Tier3.sac
 	sac2c $(SAC2CFLAGS) -DTIER=3 mandelbrot.sac
 
-tier3:
+tier4:
+	sac2c $(SAC2CFLAGS) Tier4.sac
+	sac2c $(SAC2CFLAGS) -DTIER=4 mandelbrot.sac
+
+all:
+	sac2c $(SAC2CFLAGS) Tier1.sac
+	sac2c $(SAC2CFLAGS) Tier2.sac
+	sac2c $(SAC2CFLAGS) Tier3.sac
 	sac2c $(SAC2CFLAGS) Tier4.sac
 	sac2c $(SAC2CFLAGS) -DTIER=4 mandelbrot.sac

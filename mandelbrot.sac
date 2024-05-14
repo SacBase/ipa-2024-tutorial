@@ -1,7 +1,7 @@
-#define XRES 6
-#define YRES 4
+#define XRES 15
+#define YRES 10
 #define EXPAND 64
-#define DEPTH 1024
+#define DEPTH 2048
 
 #ifndef TIER
 #define TIER 1
@@ -29,7 +29,7 @@ int main()
 
     while (true) {
         expand = EXPAND;
-        cur_shape = [YRES,XRES];
+        cur_shape = [YRES, XRES];
 
         do {
             StdIO::printf("Generating %ix%i array...\n", cur_shape[1], cur_shape[0]);
@@ -62,12 +62,12 @@ int main()
 
         #if TIER >= 4
 
-            rgbs = sobelEdges( rgbs);
+            rgbs = sobelEdges(rgbs);
 
         #endif // TIER >= 4
         #endif // TIER >= 3
         #endif // TIER >= 2
-StdIO::print(rgbs);
+
             rgbs = stretchRgb(rgbs, expand);
             drawArray(disp, rgbs);
 
@@ -93,7 +93,7 @@ StdIO::print(rgbs);
 }
 
 inline
-color[.,.] stretchRgb( color[2:shp] pic, int stretch)
+color[2:sshp] stretchRgb( color[2:shp] pic, int stretch)
 {
     return { iv -> pic[iv / stretch] | iv < shp * stretch };
 }
