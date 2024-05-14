@@ -16,11 +16,7 @@ inline
 complex[yres,xres] genComplexArray(int xres, int yres,
                                    complex cmin, complex cmax)
 {
-    difReal = real(cmax) - real(cmin);
-    difImag = imag(cmax) - imag(cmin);
-    return { [y,x] -> cmin + toc((tod(x) / tod(xres)) * difReal,
-                                 (tod(y) / tod(yres)) * difImag)
-           | [y,x] < [yres,xres] };
+    // TODO
 }
 
 /**
@@ -34,15 +30,7 @@ complex[yres,xres] genComplexArray(int xres, int yres,
 inline
 int escapeTime(complex c, int depth)
 {
-    time = 0;
-    z = c;
-
-    while (time < depth && normSq(z) <= 4d) {
-        z = z * z + c;
-        time += 1;
-    }
-
-    return time;
+    // TODO
 }
 
 /**
@@ -51,8 +39,7 @@ int escapeTime(complex c, int depth)
 inline
 int[2:shp] escapeTime(complex[2:shp] arr, int depth)
 {
-    return { iv -> escapeTime(arr[iv], depth)
-           | iv < shp };
+    // TODO
 }
 
 /**

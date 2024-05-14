@@ -20,9 +20,7 @@ int[2:shp] sobelEdges(int[2:shp] arr)
     ];
     weightsX = transpose(weightsY);
 
-    resX = relax(weightsX, arr);
-    resY = relax(weightsY, arr);
-    return min(resX + resY, 255);
+    // TODO
 }
 
 /**
@@ -32,13 +30,5 @@ int[2:shp] sobelEdges(int[2:shp] arr)
 inline
 color[2:shp] sobelEdges(color[2:shp] img)
 {
-    // Transform to put color on the first axis
-    color_major = { [col, y, x] -> toi(img)[y, x, col] };
-
-    blur = { [i] -> sobelEdges(color_major[i]) };
-
-    // Put color back at the last axis
-    idx_major = { [y, x, col] -> blur[col, y, x] };
-
-    return { iv -> (color)(idx_major[iv]) | iv < shp };
+    // TODO
 }

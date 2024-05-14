@@ -8,8 +8,7 @@ export all;
 inline
 int[2:shp] relax(int[m,m] weights, int[2:shp] arr)
 {
-    return { iv -> sum({ ov -> weights[ov] * rotate(m / 2 - ov, arr)[iv] })
-           | iv < shp };
+    // TODO
 }
 
 /**
@@ -23,7 +22,7 @@ int[2:shp] gaussBlur(int[2:shp] arr)
         [2, 3, 2],
         [1, 2, 1]
     ];
-    return relax(weights, arr) / sum(weights);
+    // TODO
 }
 
 /**
@@ -36,15 +35,7 @@ int[2:shp] gaussBlur(int[2:shp] arr)
 inline
 color[2:shp] gaussBlur(color[2:shp] img)
 {
-    // Transform to put color on the first axis
-    color_major = { [rgb, y, x] -> toi(img)[y, x, rgb] };
-
-    blur = { [rgb] -> gaussBlur(color_major[rgb]) };
-
-    // Put color back at the last axis
-    idx_major = { [y, x, rgb] -> blur[rgb, y, x] };
-
-    return { iv -> (color)(idx_major[iv]) | iv < shp };
+    // TODO
 }
 
 /**
@@ -60,7 +51,7 @@ int[2:shp] gaussBlur25(int[2:shp] arr)
         [4, 20, 33, 20, 4],
         [1,  4,  7,  4, 1]
     ];
-    return relax(weights, arr) / sum(weights);
+    // TODO
 }
 
 /**
@@ -73,13 +64,5 @@ int[2:shp] gaussBlur25(int[2:shp] arr)
 inline
 color[2:shp] gaussBlur25(color[2:shp] img)
 {
-    // Transform to put color on the first axis
-    color_major = { [rgb, y, x] -> toi(img)[y, x, rgb] };
-
-    blur = { [rgb] -> gaussBlur25(color_major[rgb]) };
-
-    // Put color back at the last axis
-    idx_major = { [y, x, rgb] -> blur[rgb, y, x] };
-
-    return { iv -> (color)(idx_major[iv]) | iv < shp };
+    // TODO
 }
