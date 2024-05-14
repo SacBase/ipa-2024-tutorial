@@ -3,6 +3,13 @@ use Structures: all;
 use Tier3: { relax };
 export all;
 
+/**
+ * The Sobel operator is an edge-detection filter that computes the gradient image from an input signal.
+ * The filtering process consists of three steps: In the first step, horizontal edges are detected,
+ * in the second step vertical edges are detected, and in the final step, both sub-results are combined
+ * to the resulting gradient image. The first two steps are in fact two independent operations, each of
+ * which requires its own individual filter mask: `weightY` and `weightsX`.
+ */
 inline
 int[2:shp] sobelEdges(int[2:shp] arr)
 {
@@ -18,6 +25,10 @@ int[2:shp] sobelEdges(int[2:shp] arr)
     return min(resX + resY, 255);
 }
 
+/**
+ * Applies Sobel edges on the given image. This operation is applied once to each color channel.
+ * I.e., it is applied once to all red values, once to all green values, and once to all blue values.
+ */
 inline
 color[2:shp] sobelEdges(color[2:shp] img)
 {
