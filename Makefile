@@ -1,4 +1,4 @@
-SAC2CFLAGS = -maxwlur 25 -nouar
+SAC2CFLAGS = -v2 -maxwlur 25 -nouar
 
 all: seq mt
 
